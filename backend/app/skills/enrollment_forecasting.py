@@ -14,10 +14,9 @@ from collections import defaultdict
 
 import numpy as np
 
+from app.config import settings
 from app.mcp_servers.registry import call_tool
-
-PLANNED_ENROLLMENT_WINDOW_WEEKS = 26  # per SOP-002 baseline enrollment curve
-FORECAST_HORIZON_WEEKS = 12
+from app.skills.risk_scoring import clamp
 
 
 def forecast(study_id: str) -> dict:
@@ -50,13 +49,13 @@ def forecast(study_id: str) -> dict:
     ss_tot = float(np.sum((cumulative - np.mean(cumulative)) ** 2)) or 1.0
     r_squared = max(0.0, 1 - ss_res / ss_tot)
 
-    forecasted_enrollment = float(cumulative[-1] + slope * FORECAST_HORIZON_WEEKS)
+    forecasted_enrollment = float(cumulative[-1] + slope * settings.forecast_horizon_weeks)
 
-    planned_weekly_rate = (target_enrollment / PLANNED_ENROLLMENT_WINDOW_WEEKS) if target_enrollment else slope
+    planned_weekly_rate = (target_enrollment / settings.planned_enrollment_window_weeks) if target_enrollment else slope
     pace_ratio = (slope / planned_weekly_rate) if planned_weekly_rate else 1.0
-    delay_probability = round(max(0.0, min(1.0, 1 - pace_ratio)), 3)
+    delay_probability = round(clamp(1 - pace_ratio), 3)
 
-    confidence = round(max(0.2, min(0.95, 0.4 + 0.5 * r_squared)), 3)
+    confidence = round(clamp(0.4 + 0.5 * r_squared, 0.2, 0.95), 3)
 
     return {
         "study_id": study_id,

@@ -15,6 +15,7 @@ every factor is traceable to an underlying metric (Development Principle 1).
 """
 from app.mcp_servers.registry import call_tool
 from app.skills import document_retrieval, enrollment_forecasting, milestone_prediction, site_performance
+from app.skills.risk_scoring import clamp
 
 
 def analyze(study_id: str) -> dict:
@@ -60,7 +61,7 @@ def analyze(study_id: str) -> dict:
         factors.append(
             {
                 "factor": "Operational quality gaps",
-                "magnitude": min(1.0, ops.get("critical_deviations", 0) * 0.2 + (ops.get("avg_query_resolution_days") or 0) / 60),
+                "magnitude": clamp(ops.get("critical_deviations", 0) * 0.2 + (ops.get("avg_query_resolution_days") or 0) / 60),
                 "detail": f"{ops.get('critical_deviations', 0)} critical deviations, "
                 f"avg query resolution {ops.get('avg_query_resolution_days')} days",
             }

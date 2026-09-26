@@ -4,13 +4,12 @@ site data (no separate CAMP dataset exists in this prototype).
 """
 from datetime import date
 
-from app.db import SessionLocal
+from app.db import session_scope
 from app.models import Site, Milestone
 
 
 def startup_status(study_id: str) -> dict:
-    db = SessionLocal()
-    try:
+    with session_scope() as db:
         startup = (
             db.query(Milestone)
             .filter(Milestone.study_id == study_id, Milestone.milestone_type == "Study Startup")
@@ -30,13 +29,10 @@ def startup_status(study_id: str) -> dict:
             "actual_date": startup.actual_date.isoformat() if startup.actual_date else None,
             "delay_days": delay_days,
         }
-    finally:
-        db.close()
 
 
 def activation_status(study_id: str) -> dict:
-    db = SessionLocal()
-    try:
+    with session_scope() as db:
         sites = db.query(Site).filter(Site.study_id == study_id).all()
         total = len(sites)
         activated = [s for s in sites if s.actual_activation_date]
@@ -53,13 +49,10 @@ def activation_status(study_id: str) -> dict:
             "delayed_sites": len(delayed),
             "delayed_site_ids": [s.site_id for s in delayed],
         }
-    finally:
-        db.close()
 
 
 def approval_status(study_id: str) -> dict:
-    db = SessionLocal()
-    try:
+    with session_scope() as db:
         milestones = db.query(Milestone).filter(Milestone.study_id == study_id).all()
         due = [m for m in milestones if m.planned_date and m.planned_date <= date.today()]
         completed = [m for m in due if m.status == "Completed"]
@@ -72,5 +65,3 @@ def approval_status(study_id: str) -> dict:
             "approval_rate": approval_rate,
             "pending_approval_milestones": pending_approval,
         }
-    finally:
-        db.close()

@@ -2,8 +2,7 @@
 KPI: False Positive Rate < 10% (see evals/agent_eval.py).
 Compliance escalations require human approval (Human Approval Matrix)."""
 from app.agents.base import BaseAgent
-from app.bus.event_bus import publish
-from app.bus.schemas import AgentEvent, EventType
+from app.bus.schemas import EventType
 from app.skills import compliance_assessment
 
 
@@ -22,15 +21,7 @@ class ComplianceAgent(BaseAgent):
             approval_type="compliance_escalation" if escalate else None,
         )
         if escalate:
-            publish(
-                AgentEvent(
-                    source_agent=self.name,
-                    target_agent="Orchestrator",
-                    study_id=study_id,
-                    risk_score=assessment["risk_score"],
-                    event_type=EventType.COMPLIANCE_ALERT,
-                )
-            )
+            self.publish_event(EventType.COMPLIANCE_ALERT, study_id, assessment["risk_score"])
         return result
 
 

@@ -2,6 +2,7 @@
 all platform intelligence (ask questions, summarize risks, retrieve
 evidence, explain recommendations)."""
 import json
+import logging
 
 from app.agents import orchestrator
 from app.agents.base import BaseAgent
@@ -10,6 +11,8 @@ from app.llm import generate
 from app.memory import short_term
 from app.observability.tracing import get_trace
 from app.skills import executive_reporting
+
+logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = (
     "You are the Clinical Operations Copilot for a clinical trial risk platform. "
@@ -46,7 +49,11 @@ class CopilotAgent(BaseAgent):
         max_risk = max(risk_scores) if risk_scores else None
 
         user_prompt = f"Question: {question}\n\nAgent data:\n{json.dumps(agent_results, indent=2, default=str)}"
-        answer = generate(SYSTEM_PROMPT, user_prompt)
+        try:
+            answer = generate(SYSTEM_PROMPT, user_prompt)
+        except Exception:
+            logger.error("LLM generate() failed in CopilotAgent.ask", exc_info=True)
+            raise
 
         result = self.execute(
             session_id=session_id,

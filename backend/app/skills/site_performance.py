@@ -8,32 +8,32 @@ tools: ctms.get_sites, cord.site_operational_metrics, etmf.site_training_complia
 evaluation_metrics: precision > 80% (see evals/agent_eval.py)
 """
 from app.mcp_servers.registry import call_tool
-from app.skills.risk_scoring import compute_risk_score, risk_tier
+from app.skills.risk_scoring import clamp, compute_risk_score, risk_tier
 
 
 def _activation_component(site: dict) -> float:
     delay = site.get("activation_delay_days")
     if delay is None:
         return 0.3
-    return max(0.0, min(1.0, delay / 90))
+    return clamp(delay / 90)
 
 
 def _deviation_component(ops: dict) -> float:
     score = ops.get("critical_deviations", 0) * 0.3 + ops.get("major_deviations", 0) * 0.15
-    return max(0.0, min(1.0, score))
+    return clamp(score)
 
 
 def _query_component(ops: dict) -> float:
     avg_resolution = ops.get("avg_query_resolution_days")
     if avg_resolution is None:
         return 0.2
-    return max(0.0, min(1.0, avg_resolution / 45))
+    return clamp(avg_resolution / 45)
 
 
 def _training_component(training_pct: float | None) -> float:
     if training_pct is None:
         return 0.3
-    return max(0.0, min(1.0, (100 - training_pct) / 40))
+    return clamp((100 - training_pct) / 40)
 
 
 def _improvement_actions(components: dict[str, float]) -> list[str]:

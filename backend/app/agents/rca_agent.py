@@ -1,9 +1,13 @@
 """AGENT-06: Root Cause Analysis Agent — explains WHY a risk exists.
 Outputs: contributing factors, confidence level, business narrative
 (Development Principle 1: every recommendation must be explainable)."""
+import logging
+
 from app.agents.base import BaseAgent
 from app.llm import generate
 from app.skills import root_cause_analysis
+
+logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = (
     "You are the Root Cause Analysis Agent for a clinical trial operations platform. "
@@ -27,7 +31,11 @@ class RCAAgent(BaseAgent):
             f"Study: {study_id}\n\nContributing factors:\n{factors_text or 'None identified'}\n\n"
             f"Evidence:\n{evidence_text or 'None retrieved'}\n\nWrite the business narrative."
         )
-        narrative = generate(SYSTEM_PROMPT, user_prompt)
+        try:
+            narrative = generate(SYSTEM_PROMPT, user_prompt)
+        except Exception:
+            logger.error("LLM generate() failed in RCAAgent.analyze", exc_info=True)
+            raise
 
         return self.execute(
             session_id=session_id,

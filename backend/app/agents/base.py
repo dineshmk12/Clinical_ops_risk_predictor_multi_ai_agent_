@@ -8,6 +8,8 @@ Model Version -> Prediction -> Recommendation -> Approval -> Audit Record
 """
 import uuid
 
+from app.bus.event_bus import publish
+from app.bus.schemas import AgentEvent, EventType
 from app.hooks import high_risk_alert, human_review_required, post_risk_scoring, pre_risk_scoring
 from app.hooks.rag_grounding_check import enforce as enforce_grounding
 from app.observability import metrics, tracing
@@ -16,6 +18,20 @@ from app.observability import metrics, tracing
 class BaseAgent:
     name: str = "BaseAgent"
     model_version: str = "rule-based-v1"
+
+    def publish_event(self, event_type: EventType, study_id: str, risk_score: float) -> None:
+        """Publish an AgentEvent to the Orchestrator — shared by the specialist
+        agents that raise risk-detected events (see AGENT COMMUNICATION
+        PROTOCOL in CLAUDE.md)."""
+        publish(
+            AgentEvent(
+                source_agent=self.name,
+                target_agent="Orchestrator",
+                study_id=study_id,
+                risk_score=risk_score,
+                event_type=event_type,
+            )
+        )
 
     def execute(
         self,

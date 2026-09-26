@@ -4,13 +4,12 @@ the local SQLite database seeded by app.seed_data.
 """
 from datetime import date, timedelta
 
-from app.db import SessionLocal
+from app.db import session_scope
 from app.models import Study, Site, EnrollmentRecord, Milestone, Resource
 
 
 def get_studies(study_id: str | None = None) -> list[dict]:
-    db = SessionLocal()
-    try:
+    with session_scope() as db:
         q = db.query(Study)
         if study_id:
             q = q.filter(Study.study_id == study_id)
@@ -27,13 +26,10 @@ def get_studies(study_id: str | None = None) -> list[dict]:
             }
             for s in q.all()
         ]
-    finally:
-        db.close()
 
 
 def get_sites(study_id: str) -> list[dict]:
-    db = SessionLocal()
-    try:
+    with session_scope() as db:
         sites = db.query(Site).filter(Site.study_id == study_id).all()
         return [
             {
@@ -52,13 +48,10 @@ def get_sites(study_id: str) -> list[dict]:
             }
             for s in sites
         ]
-    finally:
-        db.close()
 
 
 def get_enrollment(study_id: str, weeks: int = 26) -> list[dict]:
-    db = SessionLocal()
-    try:
+    with session_scope() as db:
         cutoff = date.today() - timedelta(weeks=weeks)
         records = (
             db.query(EnrollmentRecord)
@@ -76,13 +69,10 @@ def get_enrollment(study_id: str, weeks: int = 26) -> list[dict]:
             }
             for r in records
         ]
-    finally:
-        db.close()
 
 
 def get_milestones(study_id: str) -> list[dict]:
-    db = SessionLocal()
-    try:
+    with session_scope() as db:
         milestones = db.query(Milestone).filter(Milestone.study_id == study_id).all()
         return [
             {
@@ -97,13 +87,10 @@ def get_milestones(study_id: str) -> list[dict]:
             }
             for m in milestones
         ]
-    finally:
-        db.close()
 
 
 def get_resources(study_id: str) -> list[dict]:
-    db = SessionLocal()
-    try:
+    with session_scope() as db:
         resources = db.query(Resource).filter(Resource.study_id == study_id).all()
         return [
             {
@@ -115,5 +102,3 @@ def get_resources(study_id: str) -> list[dict]:
             }
             for r in resources
         ]
-    finally:
-        db.close()

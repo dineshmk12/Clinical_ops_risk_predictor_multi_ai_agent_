@@ -1,9 +1,13 @@
 """AGENT-07: Recommendation Agent — generates intervention recommendations.
 Outputs: recommended action, business impact, priority score. Every
 recommendation is grounded in evidence (Grounding Requirement, CLAUDE.md)."""
+import logging
+
 from app.agents.base import BaseAgent
 from app.llm import generate
 from app.skills import recommendation_engine
+
+logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = (
     "You are the Recommendation Agent for a clinical trial operations platform. "
@@ -28,7 +32,11 @@ class RecommendationAgent(BaseAgent):
             f"Business impact: {rec['business_impact']}\nPriority score: {rec['priority_score']}\n\n"
             f"Evidence:\n{evidence_text or 'None retrieved'}\n\nWrite the explanation."
         )
-        explanation = generate(SYSTEM_PROMPT, user_prompt)
+        try:
+            explanation = generate(SYSTEM_PROMPT, user_prompt)
+        except Exception:
+            logger.error("LLM generate() failed in RecommendationAgent.recommend", exc_info=True)
+            raise
 
         # Per the Human Approval Matrix, only closure recommendations require
         # sign-off — general recommendations are drafts (no approval needed).

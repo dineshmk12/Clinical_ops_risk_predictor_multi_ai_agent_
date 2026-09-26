@@ -1,11 +1,11 @@
 """eTMF MCP (mock) — electronic Trial Master File stand-in."""
-from app.db import SessionLocal
+from app.db import session_scope
 from app.models import Document, TrainingCompliance
+from app.skills.risk_scoring import clamp
 
 
 def retrieve_documents(study_id: str | None = None, doc_type: str | None = None) -> list[dict]:
-    db = SessionLocal()
-    try:
+    with session_scope() as db:
         q = db.query(Document)
         if study_id:
             q = q.filter((Document.study_id == study_id) | (Document.study_id.is_(None)))
@@ -23,26 +23,20 @@ def retrieve_documents(study_id: str | None = None, doc_type: str | None = None)
             }
             for d in q.all()
         ]
-    finally:
-        db.close()
 
 
 def site_training_compliance(study_id: str, site_id: str) -> float | None:
-    db = SessionLocal()
-    try:
+    with session_scope() as db:
         training = (
             db.query(TrainingCompliance)
             .filter(TrainingCompliance.study_id == study_id, TrainingCompliance.site_id == site_id)
             .all()
         )
         return round(sum(t.training_complete_pct for t in training) / len(training), 1) if training else None
-    finally:
-        db.close()
 
 
 def audit_status(study_id: str) -> dict:
-    db = SessionLocal()
-    try:
+    with session_scope() as db:
         training = db.query(TrainingCompliance).filter(TrainingCompliance.study_id == study_id).all()
         avg_training = (
             round(sum(t.training_complete_pct for t in training) / len(training), 1) if training else None
@@ -60,10 +54,8 @@ def audit_status(study_id: str) -> dict:
             "study_id": study_id,
             "avg_training_compliance_pct": avg_training,
             "missing_document_types": missing,
-            "audit_readiness_pct": max(0.0, min(100.0, audit_readiness_pct)),
+            "audit_readiness_pct": clamp(audit_readiness_pct, 0.0, 100.0),
         }
-    finally:
-        db.close()
 
 
 def inspection_documents(study_id: str) -> list[dict]:

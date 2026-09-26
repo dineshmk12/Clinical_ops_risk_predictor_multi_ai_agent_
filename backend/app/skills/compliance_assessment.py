@@ -8,7 +8,7 @@ tools: etmf.audit_status, etmf.inspection_documents, cord.operational_metrics
 evaluation_metrics: false positive rate < 10% (see evals/agent_eval.py)
 """
 from app.mcp_servers.registry import call_tool
-from app.skills.risk_scoring import compute_risk_score, risk_tier
+from app.skills.risk_scoring import clamp, compute_risk_score, risk_tier
 
 # Held-out estimate of the assessment's false-positive rate, derived from the
 # golden dataset in evals/golden_dataset.csv (see evals/agent_eval.py).
@@ -20,9 +20,9 @@ def assess(study_id: str) -> dict:
     inspection_docs = call_tool("etmf.inspection_documents", study_id=study_id)
     ops = call_tool("cord.operational_metrics", study_id=study_id)
 
-    training_gap = max(0.0, min(1.0, (100 - (audit.get("avg_training_compliance_pct") or 100)) / 40))
-    missing_docs = max(0.0, min(1.0, len(audit.get("missing_document_types", [])) * 0.5))
-    critical_deviation_component = max(0.0, min(1.0, ops.get("critical_deviations", 0) * 0.25))
+    training_gap = clamp((100 - (audit.get("avg_training_compliance_pct") or 100)) / 40)
+    missing_docs = clamp(len(audit.get("missing_document_types", [])) * 0.5)
+    critical_deviation_component = clamp(ops.get("critical_deviations", 0) * 0.25)
 
     risk_score = compute_risk_score(
         {"training_gap": training_gap, "missing_docs": missing_docs, "critical_deviations": critical_deviation_component},

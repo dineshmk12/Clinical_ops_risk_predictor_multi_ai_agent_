@@ -14,7 +14,7 @@ XGBoost/Prophet/LSTM models named in CLAUDE.md.
 from datetime import date, timedelta
 
 from app.mcp_servers.registry import call_tool
-from app.skills.risk_scoring import compute_risk_score, risk_tier
+from app.skills.risk_scoring import clamp, compute_risk_score, risk_tier
 
 
 def predict(study_id: str) -> list[dict]:
@@ -45,7 +45,7 @@ def predict(study_id: str) -> list[dict]:
             )
             continue
 
-        historical_component = max(0.0, min(1.0, avg_delay / 60))
+        historical_component = clamp(avg_delay / 60)
         delay_probability = compute_risk_score(
             {"historical_delay": historical_component, "site_activation_delay": delayed_ratio},
             weights={"historical_delay": 1.0, "site_activation_delay": 1.0},

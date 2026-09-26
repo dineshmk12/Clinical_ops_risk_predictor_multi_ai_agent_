@@ -13,7 +13,7 @@ from collections import defaultdict
 
 from app.mcp_servers.registry import call_tool
 from app.skills import compliance_assessment, milestone_prediction, site_performance
-from app.skills.risk_scoring import compute_risk_score
+from app.skills.risk_scoring import clamp, compute_risk_score
 
 
 def _trend(study_id: str) -> str:
@@ -42,13 +42,13 @@ def compute(study_id: str) -> dict:
     compliance = compliance_assessment.assess(study_id)
 
     achievement = study_metrics.get("enrollment_achievement_pct") or 0
-    enrollment_component = max(0.0, min(1.0, (100 - achievement) / 100))
+    enrollment_component = clamp((100 - achievement) / 100)
     site_component = (sum(s["risk_score"] for s in sites) / len(sites)) if sites else 0.0
     at_risk_milestones = [m for m in milestones if m["risk_category"] in ("At Risk", "Critical")]
     milestone_component = len(at_risk_milestones) / len(milestones) if milestones else 0.0
     compliance_component = compliance["risk_score"]
     utilization = resource_metrics.get("overall_utilization_pct")
-    resource_component = max(0.0, min(1.0, (100 - utilization) / 100)) if utilization is not None else 0.3
+    resource_component = clamp((100 - utilization) / 100) if utilization is not None else 0.3
 
     components = {
         "enrollment": enrollment_component,

@@ -1,8 +1,7 @@
 """AGENT-04: Milestone Prediction Agent — predicts milestone delays.
 KPI: Prediction Accuracy > 85% (see evals/agent_eval.py)."""
 from app.agents.base import BaseAgent
-from app.bus.event_bus import publish
-from app.bus.schemas import AgentEvent, EventType
+from app.bus.schemas import EventType
 from app.skills import milestone_prediction
 
 
@@ -21,15 +20,7 @@ class MilestoneAgent(BaseAgent):
         )
         for m in milestones:
             if m["risk_category"] == "Critical":
-                publish(
-                    AgentEvent(
-                        source_agent=self.name,
-                        target_agent="Orchestrator",
-                        study_id=study_id,
-                        risk_score=m["delay_probability"],
-                        event_type=EventType.MILESTONE_ALERT,
-                    )
-                )
+                self.publish_event(EventType.MILESTONE_ALERT, study_id, m["delay_probability"])
         return result
 
 

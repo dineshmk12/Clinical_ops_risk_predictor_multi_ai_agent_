@@ -1,8 +1,8 @@
 """AGENT-03: Site Intelligence Agent — detects underperforming sites.
 KPI: Precision > 80% (see evals/agent_eval.py)."""
 from app.agents.base import BaseAgent
-from app.bus.event_bus import publish
-from app.bus.schemas import AgentEvent, EventType
+from app.bus.schemas import EventType
+from app.config import settings
 from app.skills import site_performance
 
 
@@ -20,16 +20,8 @@ class SiteIntelligenceAgent(BaseAgent):
             risk_score=max_risk,
         )
         for site in sites:
-            if site["risk_score"] > 0.7:
-                publish(
-                    AgentEvent(
-                        source_agent=self.name,
-                        target_agent="Orchestrator",
-                        study_id=study_id,
-                        risk_score=site["risk_score"],
-                        event_type=EventType.SITE_RISK_DETECTED,
-                    )
-                )
+            if site["risk_score"] > settings.site_risk_publish_threshold:
+                self.publish_event(EventType.SITE_RISK_DETECTED, study_id, site["risk_score"])
         return result
 
 

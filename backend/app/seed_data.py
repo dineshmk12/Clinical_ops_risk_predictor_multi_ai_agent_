@@ -2,6 +2,7 @@
 clinical operations systems in this local prototype. Run as a script to
 (re)seed the SQLite database and knowledge base used by the platform.
 """
+import logging
 import random
 from datetime import date, timedelta
 from pathlib import Path
@@ -21,6 +22,7 @@ from app.models import (
     TrainingCompliance,
 )
 
+logger = logging.getLogger(__name__)
 fake = Faker()
 random.seed(42)
 Faker.seed(42)
@@ -318,9 +320,12 @@ def seed():
         _seed_documents(db, studies)
     finally:
         db.close()
-    print("Seed complete: 5 studies, synthetic sites/enrollment/milestones/deviations/resources, "
-          f"and {len(KNOWLEDGE_DOCS)} knowledge-base documents written to {KB_DIR}")
+    logger.info("Seed complete: 5 studies, synthetic sites/enrollment/milestones/deviations/resources, "
+                "and %d knowledge-base documents written to %s", len(KNOWLEDGE_DOCS), KB_DIR)
 
 
 if __name__ == "__main__":
+    from app.logging_config import configure_logging
+
+    configure_logging()
     seed()

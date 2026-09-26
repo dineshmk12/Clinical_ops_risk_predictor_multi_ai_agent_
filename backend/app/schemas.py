@@ -3,6 +3,10 @@ from typing import Any, Optional
 
 from pydantic import BaseModel
 
+# Default session identifier for API calls made without an explicit session
+# (e.g. curl/docs exploration) — used as the default across api/routers/*.py.
+DEFAULT_SESSION_ID = "api-session"
+
 
 class StudyOut(BaseModel):
     study_id: str

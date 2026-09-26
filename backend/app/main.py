@@ -7,6 +7,9 @@ from fastapi.staticfiles import StaticFiles
 from app.api.routers import approvals, audit, compliance, copilot, enrollment, metrics, milestones, rca, recommendations, reports, sites, studies
 from app.guardrails import GuardrailViolation
 from app.hooks.rag_grounding_check import GroundingError
+from app.logging_config import configure_logging
+
+configure_logging()
 
 app = FastAPI(
     title="Clinical Trial Health & Risk Prediction Platform",

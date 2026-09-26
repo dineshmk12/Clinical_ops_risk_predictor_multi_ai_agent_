@@ -2,8 +2,12 @@
 real MCP tool registration/transport. Swap for real MCP client wiring later
 without changing any skill or agent code (they only call `call_tool`).
 """
+import logging
+
 from app.mcp_servers import ctms_mcp, camp_mcp, cord_mcp, etmf_mcp, sharepoint_mcp
 from app.observability.metrics import Timer, record_mcp_call
+
+logger = logging.getLogger(__name__)
 
 TOOLS = {
     "ctms.get_studies": ctms_mcp.get_studies,
@@ -38,4 +42,5 @@ def call_tool(name: str, **kwargs):
         return result
     except Exception:
         record_mcp_call(name, timer.elapsed_ms(), error=True)
+        logger.error("MCP tool call failed: %s", name, exc_info=True)
         raise

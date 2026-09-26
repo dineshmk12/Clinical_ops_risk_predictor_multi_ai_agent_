@@ -1,5 +1,10 @@
 const STATUS_CLASS = { Healthy: "good", "At Risk": "warning", Critical: "critical", Completed: "good" };
-const STATUS_COLOR = { Healthy: "#0ca30c", "At Risk": "#fab219", Critical: "#d03b3b", Completed: "#0ca30c" };
+
+// Single source of truth for status colors is the CSS custom properties in
+// styles.css — read them here instead of re-hardcoding the hex values.
+const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const STATUS_COLOR_VAR = { Healthy: "--status-good", "At Risk": "--status-warning", Critical: "--status-critical", Completed: "--status-good" };
+const statusColor = (tier) => cssVar(STATUS_COLOR_VAR[tier] || "--status-good");
 
 const el = (id) => document.getElementById(id);
 const sessionId = "dashboard-" + Math.random().toString(36).slice(2, 8);
@@ -18,7 +23,7 @@ function badge(tier) {
 
 function barRow(name, score, tier) {
   const pct = Math.round((score ?? 0) * 100);
-  const color = STATUS_COLOR[tier] || "#0ca30c";
+  const color = statusColor(tier);
   return `<div class="risk-row">
       <span class="name">${name}</span>
       <span class="bar-track"><span class="bar-fill" style="width:${pct}%;background:${color}"></span></span>
@@ -93,7 +98,7 @@ async function loadDashboard(studyId) {
   if (!health || !forecast || !compliance) return;
 
   el("health-value").textContent = `${health.health_score}`;
-  el("health-value").style.color = health.health_score >= 75 ? "#0ca30c" : health.health_score >= 50 ? "#fab219" : "#d03b3b";
+  el("health-value").style.color = health.health_score >= 75 ? cssVar("--status-good") : health.health_score >= 50 ? cssVar("--status-warning") : cssVar("--status-critical");
   el("health-trend").textContent = `${health.health_trend} — ${health.health_summary}`;
 
   el("enrollment-value").textContent = `${Math.round(forecast.delay_probability * 100)}%`;
