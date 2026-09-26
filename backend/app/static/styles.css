@@ -1,0 +1,151 @@
+:root {
+  color-scheme: light;
+  --surface-1: #fcfcfb;
+  --page-plane: #f9f9f7;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #898781;
+  --gridline: #e1e0d9;
+  --baseline: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+  --series-1: #2a78d6; /* categorical slot 1 / sequential blue */
+  --status-good: #0ca30c;
+  --status-warning: #fab219;
+  --status-serious: #ec835a;
+  --status-critical: #d03b3b;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--page-plane);
+  color: var(--text-primary);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-1);
+}
+
+.topbar h1 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.study-picker { display: flex; align-items: center; gap: 8px; }
+.study-picker label { color: var(--text-secondary); font-size: 13px; }
+.study-picker select {
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  color: var(--text-primary);
+}
+
+main {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px 28px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+.stat-tile {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+}
+
+.stat-label { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; }
+.stat-value {
+  font-size: 32px;
+  font-weight: 600;
+  font-variant-numeric: proportional-nums;
+}
+.stat-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+.panel-row { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; }
+
+.panel {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+}
+
+.panel h2 { font-size: 14px; font-weight: 600; margin: 0 0 12px; color: var(--text-secondary); }
+
+.risk-list { display: flex; flex-direction: column; gap: 8px; max-height: 260px; overflow-y: auto; }
+
+.risk-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--gridline);
+}
+.risk-row:last-child { border-bottom: none; }
+
+.risk-row .name { flex: 1; color: var(--text-primary); }
+.risk-row .bar-track { flex: 1; height: 8px; background: var(--gridline); border-radius: 4px; overflow: hidden; }
+.risk-row .bar-fill { height: 100%; border-radius: 4px; }
+
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.badge.good { color: #0b3d0b; background: rgba(12, 163, 12, 0.16); }
+.badge.warning { color: #6b4500; background: rgba(250, 178, 25, 0.22); }
+.badge.serious { color: #6e2d13; background: rgba(236, 131, 90, 0.22); }
+.badge.critical { color: #5a1414; background: rgba(208, 59, 59, 0.16); }
+
+.chat-log {
+  max-height: 320px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.chat-msg { padding: 10px 12px; border-radius: 8px; font-size: 14px; line-height: 1.45; }
+.chat-msg.user { background: var(--gridline); align-self: flex-end; max-width: 80%; }
+.chat-msg.assistant { background: rgba(42, 120, 214, 0.08); border: 1px solid var(--border); }
+.chat-msg .evidence { margin-top: 6px; font-size: 12px; color: var(--text-muted); }
+
+.chat-form { display: flex; gap: 8px; }
+.chat-form input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 14px;
+}
+.chat-form button {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  background: var(--series-1);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+.chat-form button:hover { background: #256abf; }
+
+.empty-state { color: var(--text-muted); font-size: 13px; padding: 8px 0; }

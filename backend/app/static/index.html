@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clinical Operations Copilot</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Clinical Trial Health &amp; Risk Prediction Platform</h1>
+    <div class="study-picker">
+      <label for="study-select">Study</label>
+      <select id="study-select"></select>
+    </div>
+  </header>
+
+  <main>
+    <section class="stat-row" id="stat-row">
+      <div class="stat-tile" id="tile-health">
+        <div class="stat-label">Study Health</div>
+        <div class="stat-value" id="health-value">—</div>
+        <div class="stat-sub" id="health-trend">—</div>
+      </div>
+      <div class="stat-tile" id="tile-enrollment">
+        <div class="stat-label">Enrollment Delay Probability</div>
+        <div class="stat-value" id="enrollment-value">—</div>
+        <div class="stat-sub" id="enrollment-sub">—</div>
+      </div>
+      <div class="stat-tile" id="tile-compliance">
+        <div class="stat-label">Compliance Score</div>
+        <div class="stat-value" id="compliance-value">—</div>
+        <div class="stat-sub" id="compliance-sub">—</div>
+      </div>
+    </section>
+
+    <section class="panel-row">
+      <div class="panel" id="panel-enrollment">
+        <h2>Enrollment Trend (26 weeks)</h2>
+        <canvas id="enrollment-chart" width="560" height="160" role="img" aria-label="Weekly enrollment trend sparkline"></canvas>
+      </div>
+      <div class="panel" id="panel-sites">
+        <h2>Site Risk</h2>
+        <div id="site-list" class="risk-list"></div>
+      </div>
+    </section>
+
+    <section class="panel-row">
+      <div class="panel" id="panel-milestones">
+        <h2>Milestone Risk</h2>
+        <div id="milestone-list" class="risk-list"></div>
+      </div>
+      <div class="panel" id="panel-approvals">
+        <h2>Pending Approvals</h2>
+        <div id="approval-list" class="risk-list"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-copilot">
+      <h2>Clinical Operations Copilot</h2>
+      <div id="chat-log" class="chat-log" role="log" aria-live="polite"></div>
+      <form id="chat-form" class="chat-form">
+        <input id="chat-input" type="text" placeholder="Ask about this study's risk, e.g. &quot;why is enrollment at risk?&quot;" autocomplete="off" />
+        <button type="submit">Ask</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+Audit Report Excerpt.
+
+Finding: Sites with training compliance below 80% for GCP refresher modules showed a statistically higher rate of protocol deviations in the subsequent quarter. Audit readiness scoring should weight training compliance percentage alongside document completeness in eTMF when calculating overall site audit readiness.

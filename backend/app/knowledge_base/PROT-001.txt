@@ -1,0 +1,3 @@
+Protocol Section 5: Screening and Enrollment Procedures.
+
+Subjects must complete screening assessments within 28 days prior to randomization. Sites experiencing a screen failure rate above 40% should review inclusion/exclusion criteria interpretation with the medical monitor, as this is a leading indicator of downstream enrollment shortfall.

@@ -1,0 +1,7 @@
+CAPA Record CAPA-2025-014.
+
+Finding: Recurrent informed consent version-control deviations identified across multiple sites during routine monitoring, driven by delayed distribution of updated consent forms following protocol amendments.
+
+Corrective Action: Centralized consent-form distribution checklist introduced, requiring CRA sign-off within 5 business days of amendment approval.
+
+Preventive Action: Quarterly audit of consent form versions in use at each active site.

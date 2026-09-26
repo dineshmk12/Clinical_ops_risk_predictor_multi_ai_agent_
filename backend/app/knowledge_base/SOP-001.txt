@@ -1,0 +1,5 @@
+Standard Operating Procedure: Site Activation and Monitoring Visit Cadence.
+
+Purpose: Define the required cadence of site monitoring visits based on enrollment velocity and protocol deviation frequency.
+
+Policy: Sites with more than 2 major protocol deviations in a rolling 90-day window must be escalated to a monthly monitoring cadence, down from the standard quarterly cadence. Sites with a query resolution time exceeding 30 days must receive a Corrective and Preventive Action (CAPA) plan within 10 business days of detection. Site activation delays beyond 60 days from planned activation date require documented root cause analysis and a recovery plan submitted to the Study Manager.

@@ -1,0 +1,5 @@
+Standard Operating Procedure: Enrollment Risk Escalation Thresholds.
+
+Purpose: Standardize when enrollment shortfalls trigger management escalation.
+
+Policy: If actual enrollment velocity falls below 70% of the planned enrollment curve for two consecutive months, the study is classified 'At Risk' and an Enrollment Recovery Plan is required. If velocity falls below 40% of plan, the study is classified 'Critical' and requires immediate portfolio-level review by the Clinical Operations Manager and consideration of additional site activation or country expansion.

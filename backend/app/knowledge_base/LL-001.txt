@@ -1,0 +1,3 @@
+Lessons Learned Repository Entry: Late Site Activation Recovery.
+
+Across prior oncology studies, sites that activated more than 45 days behind plan rarely closed the enrollment gap organically. Studies that added 2-3 backup sites in high-performing countries within 60 days of detecting the delay recovered target enrollment on average 3 months faster than studies that waited for existing sites to ramp up. Early country-level reallocation of enrollment targets is the most effective recovery lever observed.

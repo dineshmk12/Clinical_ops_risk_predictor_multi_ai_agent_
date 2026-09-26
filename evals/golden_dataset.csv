@@ -1,0 +1,6 @@
+study_id,expected_health_tier,expected_enrollment_at_risk,expected_milestone_at_risk,expected_compliance_at_risk
+STU-1001,At Risk,true,true,false
+STU-1002,Healthy,false,false,false
+STU-1003,Critical,true,true,true
+STU-1004,Healthy,false,false,false
+STU-1005,At Risk,true,true,false
